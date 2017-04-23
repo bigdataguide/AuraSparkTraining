@@ -10,12 +10,14 @@ import scala.collection.immutable.HashSet
 object PopularMovieAnalyzer {
 
   def main(args: Array[String]) {
+    var dataPath = "data/ml-1m"
+    val conf = new SparkConf().setAppName("PopularMovieAnalyzer")
+    if(args.length > 0) {
+      dataPath = args(0)
+    } else {
+      conf.setMaster("local[1]")
+    }
 
-    val dataPath = if (args.length > 0) args(0) else "data/ml-1m/"
-
-    // Create a SparContext with the given master URL
-    val conf =
-      new SparkConf().setAppName("PopularMovieAnalyzer")
     val sc = new SparkContext(conf)
 
     /**
@@ -24,9 +26,9 @@ object PopularMovieAnalyzer {
     val DATA_PATH = dataPath
     val USER_AGE = "18"
 
-    val usersRdd = sc.textFile(DATA_PATH + "users.dat")
-    val moviesRdd = sc.textFile(DATA_PATH + "movies.dat")
-    val ratingsRdd = sc.textFile(DATA_PATH + "ratings.dat")
+    val usersRdd = sc.textFile(DATA_PATH + "/users.dat")
+    val moviesRdd = sc.textFile(DATA_PATH + "/movies.dat")
+    val ratingsRdd = sc.textFile(DATA_PATH + "/ratings.dat")
 
     /**
       * Step 2: Extract columns from RDDs

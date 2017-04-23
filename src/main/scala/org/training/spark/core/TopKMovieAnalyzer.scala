@@ -8,12 +8,14 @@ import org.apache.spark._
 object TopKMovieAnalyzer {
 
   def main(args: Array[String]) {
+    var dataPath = "data/ml-1m"
+    val conf = new SparkConf().setAppName("TopKMovieAnalyzer")
+    if(args.length > 0) {
+      dataPath = args(0)
+    } else {
+      conf.setMaster("local[1]")
+    }
 
-    val dataPath = if (args.length > 0) args(0) else "data/ml-1m/"
-
-    // Create a SparContext with the given master URL
-    val conf =
-      new SparkConf().setAppName("TopKMovieAnalyzer")
     val sc = new SparkContext(conf)
 
     /**
@@ -21,7 +23,7 @@ object TopKMovieAnalyzer {
       */
     val DATA_PATH = dataPath
 
-    val ratingsRdd = sc.textFile(DATA_PATH + "ratings.dat")
+    val ratingsRdd = sc.textFile(DATA_PATH + "/ratings.dat")
 
     /**
       * Step 2: Extract columns from RDDs

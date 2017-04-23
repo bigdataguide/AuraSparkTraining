@@ -1,5 +1,6 @@
 package org.training.spark.ml
 
+import org.apache.spark.SparkConf
 import org.apache.spark.ml.regression.LinearRegression
 import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.training.spark.util.MLExampleUtils
@@ -9,17 +10,16 @@ import scala.language.reflectiveCalls
 object LinearRegressionExample {
 
   def main(args: Array[String]) {
-    var masterUrl = "local[1]"
     var dataPath = "data/mllib/sample_linear_regression_data.txt"
-    if (args.length > 0) {
-      masterUrl = args(0)
-    } else if(args.length > 1) {
-      dataPath = args(1)
+    val conf = new SparkConf()
+    if(args.length > 0) {
+      dataPath = args(0)
+    } else {
+      conf.setMaster("local[1]")
     }
 
     val spark = SparkSession
       .builder
-      .master(masterUrl)
       .appName("LinearRegressionExample")
       .getOrCreate()
 

@@ -1,22 +1,22 @@
 package org.training.spark.ml
 
+import org.apache.spark.SparkConf
 import org.apache.spark.ml.clustering.KMeans
 import org.apache.spark.sql.SparkSession
 
 object KMeansExample {
 
   def main(args: Array[String]): Unit = {
-    var masterUrl = "local[1]"
     var dataPath = "data/mllib/sample_kmeans_data.txt"
-    if (args.length > 0) {
-      masterUrl = args(0)
-    } else if(args.length > 1) {
-      dataPath = args(1)
+    val conf = new SparkConf()
+    if(args.length > 0) {
+      dataPath = args(0)
+    } else {
+      conf.setMaster("local[1]")
     }
 
     val spark = SparkSession
       .builder
-      .master(masterUrl)
       .appName(s"${this.getClass.getSimpleName}")
       .getOrCreate()
 

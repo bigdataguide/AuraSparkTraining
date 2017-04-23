@@ -1,5 +1,6 @@
 package org.training.spark.ml
 
+import org.apache.spark.SparkConf
 import org.apache.spark.ml.evaluation.RegressionEvaluator
 import org.apache.spark.ml.recommendation.ALS
 // $example off$
@@ -17,17 +18,16 @@ object ALSExample {
   // $example off$
 
   def main(args: Array[String]) {
-    var masterUrl = "local[1]"
     var dataPath = "data/mllib/sample_movielens_ratings.txt"
-    if (args.length > 0) {
-      masterUrl = args(0)
-    } else if(args.length > 1) {
-      dataPath = args(1)
+    val conf = new SparkConf()
+    if(args.length > 0) {
+      dataPath = args(0)
+    } else {
+      conf.setMaster("local[1]")
     }
 
     val spark = SparkSession
       .builder
-      .master(masterUrl)
       .appName("ALSExample")
       .getOrCreate()
     import spark.implicits._
