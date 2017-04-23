@@ -21,8 +21,8 @@
     <jedis.version>2.8.2</jedis.version>
     <fastjson.version>1.2.14</fastjson.version>
     <java.version>1.7</java.version>
-    <scala.version>2.10.4</scala.version>
-    <scala.binary.version>2.10</scala.binary.version>
+    <scala.version>2.11.8</scala.version>
+    <scala.binary.version>2.11</scala.binary.version>
   </properties>
   <dependencies>
     <dependency>
