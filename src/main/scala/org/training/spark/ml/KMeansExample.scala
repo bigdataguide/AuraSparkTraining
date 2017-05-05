@@ -17,6 +17,7 @@ object KMeansExample {
 
     val spark = SparkSession
       .builder
+      .config(conf)
       .appName(s"${this.getClass.getSimpleName}")
       .getOrCreate()
 

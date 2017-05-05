@@ -20,6 +20,7 @@ object LinearRegressionExample {
 
     val spark = SparkSession
       .builder
+      .config(conf)
       .appName("LinearRegressionExample")
       .getOrCreate()
 

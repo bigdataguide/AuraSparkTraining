@@ -28,6 +28,7 @@ object ALSExample {
 
     val spark = SparkSession
       .builder
+      .config(conf)
       .appName("ALSExample")
       .getOrCreate()
     import spark.implicits._
