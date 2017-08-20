@@ -30,6 +30,7 @@ object PopularMovieAnalyzer {
     val moviesRdd = sc.textFile(DATA_PATH + "/movies.dat")
     val ratingsRdd = sc.textFile(DATA_PATH + "/ratings.dat")
 
+    val ages = Set("18", "19", "20", "21", "22", "23", "24")
     /**
       * Step 2: Extract columns from RDDs
       */
@@ -39,7 +40,7 @@ object PopularMovieAnalyzer {
       .map { x =>
         (x(0), x(2))
       }
-      .filter(_._2.equals(USER_AGE))
+      .filter(x => {val age = x._2; ages.contains(age)})
 
     //Array[String]
     val userlist = users.map(_._1).collect()
@@ -63,13 +64,7 @@ object PopularMovieAnalyzer {
         (x._2, 1)
       }
       .reduceByKey(_ + _)
-      .map { x =>
-        (x._2, x._1)
-      }
-      .sortByKey(false)
-      .map { x =>
-        (x._2, x._1)
-      }
+      .sortBy(_._2, false)
       .take(10)
 
     /**

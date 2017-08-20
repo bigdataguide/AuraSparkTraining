@@ -6,3 +6,7 @@ target/
 .DS_Store
 
 *.iml
+
+*.log
+
+metastore_db/
