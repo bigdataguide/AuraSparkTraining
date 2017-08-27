@@ -58,6 +58,14 @@ object LinearRegressionExample {
     MLExampleUtils.evaluateRegressionModel(lirModel, training, "label")
     println("Test data results:")
     MLExampleUtils.evaluateRegressionModel(lirModel, test, "label")
+    val df =
+      spark.createDataFrame(
+          Seq((0.14476184437006356, -0.11280617018445871),
+            (0.14476184437006356, -0.11280617018445871)
+          )
+        ).toDF("features")
+    lirModel.transform(df).select("prediction").take(5).foreach(println)
+    //1:0.14476184437006356 2:-0.11280617018445871 3:-0.4385084538142101 4:-0.5961619435136434 5:0.419554626795412 6:-0.5047767472761191 7:0.457180284958592 8:-0.9129360314541999 9:-0.6320022059786656 10:-0.44989608519659363
 
     spark.stop()
   }

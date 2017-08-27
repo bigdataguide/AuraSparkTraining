@@ -22,6 +22,7 @@ object SparkSQLSimpleExample {
         .config(conf)
         .getOrCreate()
 
+    val df = spark.read.textFile("/tmp/ml-1m/ratings/.dat")
     val sc = spark.sparkContext
 
     /**
@@ -81,7 +82,7 @@ object SparkSQLSimpleExample {
     /**
      * 读取parquet格式数据2： read.parquet(...)
      */
-    val ratingsRdd = sc.textFile(DATA_PATH + "ratings.dat")
+    val ratingsRdd = sc.textFile(DATA_PATH + "/ratings.dat")
 
     val ratingSchemaString = "userID movieID Rating Timestamp"
     val ratingSchema = StructType(ratingSchemaString.split(" ")
