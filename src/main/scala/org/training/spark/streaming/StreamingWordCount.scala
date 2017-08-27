@@ -19,13 +19,8 @@ object StreamingWordCount {
     println("input:" + args(0))
     val lines = ssc.textFileStream(args(0))
     val words = lines.flatMap(_.split(" "))
-    val wordCounts = words.foreachRDD(
-      rdd=>
-        rdd.map(x => (x, 1))
-          .reduceByKey(_ + _)
-    )
-    //val wordCounts = words.map(x => (x, 1)).reduceByKey(_ + _)
-    //wordCounts.print(100)
+    val wordCounts = words.map(x => (x, 1)).reduceByKey(_ + _)
+    wordCounts.print(10)
     ssc.start()
     ssc.awaitTermination()
   }
