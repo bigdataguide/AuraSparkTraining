@@ -23,9 +23,15 @@ object WordCountV2 {
 
     val result = spark.read.textFile(dataPath)
       .flatMap(_.split("\\s+"))
-      .groupByKey(x => x)
+      .groupBy("value")
       .count()
 
     result.collect().foreach(println)
+
+    result.toDF("w", "c").createOrReplaceTempView("words")
+
+    // print top 10 not null words
+    spark.sql("select w from words where length(w) > 0 order by c desc limit 10")
+      .collect().foreach(println)
   }
 }
