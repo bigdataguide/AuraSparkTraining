@@ -10,6 +10,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="scala-sdk-2.11.8" level="application" />
     <orderEntry type="library" name="Maven: org.apache.spark:spark-sql_2.11:2.1.0" level="project" />
     <orderEntry type="library" name="Maven: com.univocity:univocity-parsers:2.2.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.spark:spark-sketch_2.11:2.1.0" level="project" />
@@ -164,6 +165,14 @@
     <orderEntry type="library" name="Maven: org.spire-math:spire-macros_2.11:0.7.4" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.5" level="project" />
     <orderEntry type="library" name="Maven: com.chuusai:shapeless_2.11:2.0.0" level="project" />
-    <orderEntry type="library" name="scala-sdk-2.11.8" level="application" />
+    <orderEntry type="module-library">
+      <library name="Maven: com.redislabs:spark-redis:0.3.2">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/spark-redis-0.3.2.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>
