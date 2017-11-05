@@ -42,13 +42,14 @@ object MyAverage {
 
     import spark.implicits._
 
-    val ds =
+    val rdd = spark.sparkContext.makeRDD(
       """
         |{"name":"Michael", "salary":3000}
         |{"name":"Andy", "salary":4500}
         |{"name":"Justin", "salary":3500}
         |{"name":"Berta", "salary":4000}
-      """.stripMargin.split("\n").toSeq.toDF().as[Employee]
+      """.stripMargin.split("\n"))
+    val ds = spark.read.json(rdd).as[Employee]
     ds.show()
 
     val averageSalary = new MyAverage().toColumn.name("average_salary")

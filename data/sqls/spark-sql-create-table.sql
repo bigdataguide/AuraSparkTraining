@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS users_partitioned
 USING ORC
 PARTITIONED BY(age)
 CLUSTERED BY(id) INTO 8 BUCKETS
-AS SELECT * FROM users_csv
+AS SELECT * FROM users_parquet
 
 -- column order changed
 DESC users_partitioned

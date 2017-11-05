@@ -40,14 +40,16 @@ object MultipleDimensionAggregation {
     println("rollup city and year")
     withRollup.show()
 
-    val withCube = sales.cube("city", "year")
+    val withCube = sales
+      .cube("city", "year")
       .agg(sum("amount") as "amount")
       .sort($"city".desc_nulls_last, $"year".asc_nulls_last)
     println("cube city and year")
     withCube.show()
 
-    val withPivot = sales.groupBy("city")
-      .pivot("year", Seq(2015,2016,2017))
+    val withPivot = sales
+      .groupBy("city")
+      .pivot("year", Seq(2015, 2016, 2017))
       .agg(sum("amount") as "amount")
       .sort($"city".desc)
     println("group by city and pivot by year")

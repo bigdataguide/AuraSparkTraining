@@ -51,15 +51,13 @@ object MyAverageUDAF {
       .getOrCreate()
     spark.udf.register("myAverage", new MyAverageUDAF())
 
-    import spark.implicits._
-
-    val df =
-      """
-       |{"name":"Michael", "salary":3000}
-       |{"name":"Andy", "salary":4500}
-       |{"name":"Justin", "salary":3500}
-       |{"name":"Berta", "salary":4000}
-     """.stripMargin.split("\n").toSeq.toDF()
+    val rdd = spark.sparkContext.makeRDD("""
+                                           |{"name":"Michael", "salary":3000}
+                                           |{"name":"Andy", "salary":4500}
+                                           |{"name":"Justin", "salary":3500}
+                                           |{"name":"Berta", "salary":4000}
+                                         """.stripMargin.split("\n"))
+    val df = spark.read.json(rdd)
     df.createOrReplaceTempView("employees")
     df.show()
 
