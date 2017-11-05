@@ -27,6 +27,11 @@
   <dependencies>
     <dependency>
       <groupId>org.apache.spark</groupId>
+      <artifactId>spark-hive_${scala.binary.version}</artifactId>
+      <version>${spark.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.spark</groupId>
       <artifactId>spark-sql_${scala.binary.version}</artifactId>
       <version>${spark.version}</version>
     </dependency>
@@ -39,6 +44,11 @@
       <groupId>org.apache.spark</groupId>
       <artifactId>spark-streaming-kafka-0-8_${scala.binary.version}</artifactId>
       <version>${spark.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.hbase</groupId>
+      <artifactId>hbase-client</artifactId>
+      <version>1.2.4</version>
     </dependency>
 
     <dependency>
