@@ -11,7 +11,7 @@ import org.apache.spark.api.java.function.*;
 import org.apache.spark.SparkConf;
 import scala.Tuple2;
 
-public class WordCount {
+public class JavaWordCount {
   public static void main(String[] args) throws Exception {
     String masterUrl = "local[1]";
     String inputFile = "data/textfile/";

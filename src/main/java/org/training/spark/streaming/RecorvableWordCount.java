@@ -59,7 +59,8 @@ public class RecorvableWordCount {
                 }
             });
         } else {
-            Function<MessageAndMetadata<String, String>, String> func = new Function<MessageAndMetadata<String, String>, String>() {
+            Function<MessageAndMetadata<String, String>, String> func =
+                    new Function<MessageAndMetadata<String, String>, String>() {
                 @Override
                 public String call(MessageAndMetadata<String, String> msg) throws Exception {
                     return msg.message();
