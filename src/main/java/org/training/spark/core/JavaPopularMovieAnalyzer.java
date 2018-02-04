@@ -6,6 +6,7 @@ import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.broadcast.Broadcast;
 import scala.Tuple2;
+import scala.Tuple3;
 
 import java.util.*;
 
@@ -17,7 +18,7 @@ public class JavaPopularMovieAnalyzer {
   public static void main(String[] args) {
     String dataPath = "data/ml-1m";
     SparkConf conf = new SparkConf().setAppName("PopularMovieAnalyzer");
-    if(args.length > 0) {
+    if (args.length > 0) {
       dataPath = args[0];
     } else {
       conf.setMaster("local[1]");
@@ -39,13 +40,13 @@ public class JavaPopularMovieAnalyzer {
      * Step 2: Extract columns from RDDs
      */
     //users: RDD[(userID, age)]
-    JavaPairRDD<String, String> users = usersRdd
+    JavaRDD<Tuple3<String, String, String>> users = usersRdd
         .map(x -> x.split("::"))
-        .mapToPair (x -> new Tuple2<String, String>(x[0], x[2]))
-        .filter(x -> x._2.equals(USER_AGE));
-
+        .map(x -> new Tuple3<String, String, String>(x[0], x[1], x[2]))
+        .filter(x -> x._2().equals("M"))
+        .filter(x -> x._3().equals(USER_AGE));
     //List[String]
-    List<String> userlist = users.map(x -> x._1).collect();
+    List<String> userlist = users.map(x -> x._1()).collect();
 
     //broadcast
     Set<String> userSet = new HashSet<>();
@@ -57,7 +58,7 @@ public class JavaPopularMovieAnalyzer {
      */
     List<Tuple2<String, Integer>> topKmovies = ratingsRdd
         .map(x -> x.split("::"))
-        .mapToPair( x -> new Tuple2<String, String>(x[0], x[1]))
+        .mapToPair(x -> new Tuple2<String, String>(x[0], x[1]))
         .filter(x -> broadcastUserSet.getValue().contains(x._1))
         .mapToPair(x -> new Tuple2<String, Integer>(x._2(), 1))
         .reduceByKey((x, y) -> x + y)
