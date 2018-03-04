@@ -14,9 +14,17 @@ import java.util.Iterator;
  */
 public class JavaWordCountV2 {
     public static void main(String[] args) {
-        SparkSession spark = SparkSession.builder().getOrCreate();
+        SparkSession spark = SparkSession.builder()
+            .config("spark.sql.shuffle.partitions", "10")
+            .config("spark.sql.autoBroadcastJoinThreshold", 20485760)
+            .getOrCreate();
 
-        Dataset<String> ds = spark.read().textFile("data/textfile/Hamlet.txt");
+        String inputPath = "data/textfile/Hamlet.txt";
+        if(args.length > 0) {
+            inputPath = args[0];
+        }
+        Dataset<String> ds = spark.read().textFile(inputPath);
+
         Dataset<String> words = ds.flatMap(new FlatMapFunction<String, String>() {
             public Iterator<String> call(String s) throws Exception {
                 return Arrays.asList(s.split(" ")).iterator();
@@ -32,7 +40,6 @@ public class JavaWordCountV2 {
 
         words.createOrReplaceTempView("words");
         spark.sql("select value, count(*) from words group by value").show();
-
 
     }
 }

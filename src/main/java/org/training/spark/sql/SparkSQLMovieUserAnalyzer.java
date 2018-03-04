@@ -15,50 +15,6 @@ import java.util.List;
  * Created by xicheng.dong on 10/24/17.
  */
 public class SparkSQLMovieUserAnalyzer {
-    public static Dataset<Row> getUserDS(SparkSession spark, String dataPath) {
-        JavaRDD<String> userRDD = spark.sparkContext()
-                .textFile(dataPath + "/users.dat", 1)
-                .toJavaRDD();
-
-        // Generate the schema based on the string of schema
-        List<StructField> fields = new ArrayList<>();
-        for (String fieldName : "userID gender age".split(" ")) {
-            StructField field = DataTypes.createStructField(fieldName, DataTypes.StringType, true);
-            fields.add(field);
-        }
-        StructType schema = DataTypes.createStructType(fields);
-
-        JavaRDD<Row> userRowRDD = userRDD.map(new Function<String, Row>() {
-            public Row call(String s) {
-                String[] attr = s.split("::");
-                return RowFactory.create(attr[0], attr[1], attr[2]);
-            }
-        });
-        return spark.createDataFrame(userRowRDD, schema);
-    }
-
-    public static Dataset<Row> getRatingDS(SparkSession spark, String dataPath) {
-        JavaRDD<String> ratingRDD = spark.sparkContext()
-                .textFile(dataPath + "/ratings.dat", 1)
-                .toJavaRDD();
-
-        // Generate the schema based on the string of schema
-        List<StructField> fields = new ArrayList<>();
-        for (String fieldName : "userID movieID".split(" ")) {
-            StructField field = DataTypes.createStructField(fieldName, DataTypes.StringType, true);
-            fields.add(field);
-        }
-        StructType schema = DataTypes.createStructType(fields);
-
-        JavaRDD<Row> ratingRowRDD = ratingRDD.map(new Function<String, Row>() {
-            public Row call(String s) {
-                String[] attr = s.split("::");
-                return RowFactory.create(attr[0], attr[1]);
-            }
-        });
-        return spark.createDataFrame(ratingRowRDD, schema);
-    }
-
     public static void main(String[] args) {
         String dataPath = "data/ml-1m";
 
@@ -70,9 +26,8 @@ public class SparkSQLMovieUserAnalyzer {
         }
         SparkSession spark = SparkSession.builder().config(conf).getOrCreate();
 
-        Dataset<Row> userDS = getUserDS(spark, dataPath);
-        Dataset<Row> ratingDS = getRatingDS(spark, dataPath);
-
+        Dataset<Row> userDS = spark.read().json(dataPath + "/users.json");
+        Dataset<Row> ratingDS = spark.read().parquet(dataPath + "/ratings.parquet");
         ratingDS.filter("movieID = 2116")
                 .join(userDS,"userID" )
                 .select("gender", "age")
