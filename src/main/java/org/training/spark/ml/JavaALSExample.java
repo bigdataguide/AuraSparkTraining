@@ -63,6 +63,8 @@ public class JavaALSExample {
       .appName("JavaALSExample")
       .getOrCreate();
 
+    spark.sparkContext().setCheckpointDir("/tmp/als");
+
     JavaRDD<Rating> ratingsRDD = spark
       .read().textFile("data/mllib/sample_movielens_ratings.txt").javaRDD()
       .map(new Function<String, Rating>() {
@@ -77,7 +79,7 @@ public class JavaALSExample {
 
     // Build the recommendation model using ALS on the training data
     ALS als = new ALS()
-      .setMaxIter(5)
+      .setMaxIter(10)
       .setRegParam(0.01)
       .setUserCol("userId")
       .setItemCol("movieId")

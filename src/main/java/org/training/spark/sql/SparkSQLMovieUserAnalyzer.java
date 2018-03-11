@@ -39,6 +39,12 @@ public class SparkSQLMovieUserAnalyzer {
         spark.sql("SELECT gender, age, count(*) from user as u join rating  as r " +
                 "on u.userid = r.userid where movieid = 2116 group by gender, age ").show();
 
+        // Save to different format and compare their size
+        ratingDS.write().mode("overwrite").csv("/tmp/csv");
+        ratingDS.write().mode("overwrite").json("/tmp/json");
+        ratingDS.write().mode("overwrite").parquet("/tmp/parquet");
+        ratingDS.write().mode("overwrite").orc("/tmp/orc");
+
         spark.stop();
     }
 }
