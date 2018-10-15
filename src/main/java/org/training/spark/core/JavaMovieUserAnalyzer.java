@@ -36,7 +36,7 @@ public class JavaMovieUserAnalyzer {
         /**
          * Step 2: Extract columns from RDDs
          */
-        //users: RDD[(userID, (gender, age))]
+        //users: RDD[(userID, gender:age)]
         JavaPairRDD<String, String> users = usersRdd.mapToPair( s -> {
             String[] line = s.split("::");
             return new Tuple2<>(line[0], line[1] + ":" + line[2]);
@@ -51,10 +51,10 @@ public class JavaMovieUserAnalyzer {
         /**
          * Step 3: join RDDs
          */
-        //useRating: RDD[(userID, (movieID, (gender, age))]
+        //useRating: RDD[(userID, (movieID, gender:age)]
         JavaPairRDD<String, Tuple2<String, String>> userRating = usermovie.join(users);
 
-        //movieuser: RDD[(movieID, (movieTile, (gender, age))]
+        //userDistribution: RDD[(gender:age, count)]
         JavaPairRDD<String, Integer> userDistribution = userRating.mapToPair(t ->
             new Tuple2<>(t._2()._2(), 1)
         ).reduceByKey((Integer n1, Integer n2) -> n1 + n2);

@@ -1,7 +1,6 @@
 package org.training.spark.core;
 
 import org.apache.spark.SparkConf;
-import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.broadcast.Broadcast;
@@ -39,18 +38,21 @@ public class JavaPopularMovieAnalyzer {
     /**
      * Step 2: Extract columns from RDDs
      */
-    //users: RDD[(userID, age)]
+    //users: RDD[(userID, gender, age)]
     JavaRDD<Tuple3<String, String, String>> users = usersRdd
-        .map(x -> x.split("::"))
+        .map(x -> x.split("::")) // Array[String]
         .map(x -> new Tuple3<String, String, String>(x[0], x[1], x[2]))
         .filter(x -> x._2().equals("M"))
-        .filter(x -> x._3().equals(USER_AGE));
+        .filter(x -> {
+          int a = Integer.parseInt(x._3());
+          return a >= 18 && a <=24;
+        });
     //List[String]
     List<String> userlist = users.map(x -> x._1()).collect();
 
     //broadcast
     Set<String> userSet = new HashSet<>();
-    userSet.addAll(userlist);
+    userSet.addAll(userlist); // userIds
     Broadcast<Set<String>> broadcastUserSet = sc.broadcast(userSet);
 
     /**
@@ -58,13 +60,13 @@ public class JavaPopularMovieAnalyzer {
      */
     List<Tuple2<String, Integer>> topKmovies = ratingsRdd
         .map(x -> x.split("::"))
-        .mapToPair(x -> new Tuple2<String, String>(x[0], x[1]))
+        .mapToPair(x -> new Tuple2<String, String>(x[0], x[1])) // (userId,movieId)
         .filter(x -> broadcastUserSet.getValue().contains(x._1))
-        .mapToPair(x -> new Tuple2<String, Integer>(x._2(), 1))
-        .reduceByKey((x, y) -> x + y)
-        .mapToPair(x -> new Tuple2<>(x._2, x._1))
-        .sortByKey(false)
-        .mapToPair(x -> new Tuple2<>(x._2, x._1))
+        .mapToPair(x -> new Tuple2<String, Integer>(x._2(), 1)) // (movieId, count)
+        .reduceByKey((x, y) -> x + y) // (movieId, count)
+        .mapToPair(x -> new Tuple2<>(x._2, x._1)) // (count, movieId)
+        .sortByKey(false) // sort by count desc
+        .mapToPair(x -> new Tuple2<>(x._2, x._1)) // (movieId, count)
         .take(10);
 
     /**
